@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Categorie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,16 +21,40 @@ class CategorieRepository extends ServiceEntityRepository
         parent::__construct($registry, Categorie::class);
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function add(Categorie $entity, bool $flush = true): void
+    {
+        $this->_em->persist($entity);
+        if ($flush) {
+            $this->_em->flush();
+        }
+    }
+
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function remove(Categorie $entity, bool $flush = true): void
+    {
+        $this->_em->remove($entity);
+        if ($flush) {
+            $this->_em->flush();
+        }
+    }
+
     // /**
     //  * @return Categorie[] Returns an array of Categorie objects
     //  */
     /*
     public function findByExampleField($value)
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.exampleField = :val')
             ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
+            ->orderBy('c.id', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()
@@ -39,8 +65,8 @@ class CategorieRepository extends ServiceEntityRepository
     /*
     public function findOneBySomeField($value): ?Categorie
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.exampleField = :val')
             ->setParameter('val', $value)
             ->getQuery()
             ->getOneOrNullResult()
