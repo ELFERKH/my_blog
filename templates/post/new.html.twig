@@ -1,0 +1,9 @@
+{% extends "home.html.twig" %}
+
+{% block body %}
+	<h1>Create new Post</h1>
+
+	{{ include('post/_form.html.twig') }}
+
+	<a href="{{ path('app_post_index') }}">back to list</a>
+{% endblock %}
