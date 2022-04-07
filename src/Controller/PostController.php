@@ -28,15 +28,47 @@ class PostController extends AbstractController
     /**
      * @Route("/new", name="app_post_new", methods={"GET", "POST"})
      */
-    public function new(Request $request, PostRepository $postRepository): Response
-    {
+    public function new(
+        Request $request,
+        PostRepository $postRepository
+    ): Response {
         $post = new Post();
+
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            //var_dump($request);
+            //var_dump($request->files->get('image'));
+            //$image = $request->files->get('post[image]');
+            // $image_name = $request->post[image];
+            /* $image = $request->file('image');
+            if ($image != '') {
+                echo '111';
+            } else {
+                echo 'viiide';
+            }*/
+
+            $image = $form['image']->getData();
+
+            if ($image) {
+                $image_name = $image->getClientOriginalName();
+
+                //$image = $request->files->get('image');
+                //$image_name = $image->getClientOriginalName();
+                //$image_name = md5(uniqid()) . '.' . $image->guessExtension();
+                $image->move(
+                    $this->getParameter('image_directory'),
+                    $image_name
+                );
+                $post->setImage($image_name);
+            }
             $postRepository->add($post);
-            return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute(
+                'app_post_index',
+                [],
+                Response::HTTP_SEE_OTHER
+            );
         }
 
         return $this->renderForm('post/new.html.twig', [
@@ -58,14 +90,21 @@ class PostController extends AbstractController
     /**
      * @Route("/{id}/edit", name="app_post_edit", methods={"GET", "POST"})
      */
-    public function edit(Request $request, Post $post, PostRepository $postRepository): Response
-    {
+    public function edit(
+        Request $request,
+        Post $post,
+        PostRepository $postRepository
+    ): Response {
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $postRepository->add($post);
-            return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute(
+                'app_post_index',
+                [],
+                Response::HTTP_SEE_OTHER
+            );
         }
 
         return $this->renderForm('post/edit.html.twig', [
@@ -77,12 +116,24 @@ class PostController extends AbstractController
     /**
      * @Route("/{id}", name="app_post_delete", methods={"POST"})
      */
-    public function delete(Request $request, Post $post, PostRepository $postRepository): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->request->get('_token'))) {
+    public function delete(
+        Request $request,
+        Post $post,
+        PostRepository $postRepository
+    ): Response {
+        if (
+            $this->isCsrfTokenValid(
+                'delete' . $post->getId(),
+                $request->request->get('_token')
+            )
+        ) {
             $postRepository->remove($post);
         }
 
-        return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute(
+            'app_post_index',
+            [],
+            Response::HTTP_SEE_OTHER
+        );
     }
 }

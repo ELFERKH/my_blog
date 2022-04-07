@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class PostType extends AbstractType
 {
@@ -19,7 +20,7 @@ class PostType extends AbstractType
         $builder
             ->add('titre')
             ->add('description')
-            ->add('image')
+            ->add('image', FileType::class)
             ->add('datePublication')
             ->add('categorie', EntityType::class, [
                 'class' => Categorie::class,
