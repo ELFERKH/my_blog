@@ -3,9 +3,18 @@
 {% block body %}
 	<h1>Edit Post</h1>
 
-	{{ include('post/_form.html.twig', {'button_label': 'Update'}) }}
+	{{ form_start(form, { 'attr': { 'enctype': 'multipart/form-data'} }) }}
+
+	{{ form_row(form.titre) }}
+	{{ form_row(form.description) }}
+	{{ form_row(form.image) }}
+	<input type="text" value="{{post.image}}" disabled="disables"/>
+	{{ form_row(form.datePublication) }}
+	{{ form_row(form.categorie) }}
+	{{ form_row(form.utilisateur) }}
+
+	<button class="btn">{{ button_label|default('Modifier') }}</button>
+	{{ form_end(form) }}
 
 	<a href="{{ path('app_post_index') }}">back to list</a>
-
-	{{ include('post/_delete_form.html.twig') }}
 {% endblock %}

@@ -16,7 +16,9 @@
 							<button type="button" class="btn btn-outline-primary">
 								<a href="{{ path('app_post_edit', {'id': column.id}) }}" class="card-link">edit</a>
 							</button>
-							{{ include('post/_delete_form.html.twig') }}
+							<button type="button" class="btn btn-outline-danger">
+								<a href="{{ path('app_post_delete2', {'id': column.id}) }}" onclick="return confirm('Etes-vous sur de vouloir supprimer ce post ?');" class="card-link">delete</a>
+							</button>
 						</div>
 						<div class="card-footer text-muted">
 							<td>{{ column.datePublication ? column.datePublication|date('Y-m-d H:i:s') : '' }}</td>
@@ -27,7 +29,6 @@
 		{% else %}
 			<span>no records found</span>
 		{% endfor %}
-
 
 		<a href="{{ path('app_post_new') }}">Create new</a>
 	</div>
