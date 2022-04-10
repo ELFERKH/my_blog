@@ -1,4 +1,7 @@
 {
+    "beberlei/doctrineextensions": {
+        "version": "v1.3.0"
+    },
     "doctrine/annotations": {
         "version": "1.13",
         "recipe": {
@@ -20,9 +23,6 @@
     "doctrine/common": {
         "version": "3.2.2"
     },
-     "doctrine/data-fixtures": {
-        "version": "1.5.2"
-    },
     "doctrine/dbal": {
         "version": "3.3.4"
     },
@@ -41,18 +41,6 @@
             "./config/packages/doctrine.yaml",
             "./src/Entity/.gitignore",
             "./src/Repository/.gitignore"
-        ]
-    },
-    "doctrine/doctrine-fixtures-bundle": {
-        "version": "3.4",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "3.0",
-            "ref": "1f5514cfa15b947298df4d771e694e578d4c204d"
-        },
-        "files": [
-            "./src/DataFixtures/AppFixtures.php"
         ]
     },
     "doctrine/doctrine-migrations-bundle": {
@@ -97,9 +85,6 @@
     },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.7"
-    },
-     "fzaninotto/faker": {
-        "version": "v1.9.2"
     },
     "laminas/laminas-code": {
         "version": "3.4.1"

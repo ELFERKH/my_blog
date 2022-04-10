@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
+use DoctrineExtensions\Query\Mysql;
 
 /**
  * @method Post|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,6 +20,45 @@ class PostRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Post::class);
+    }
+
+    /**
+     * @method Post[]
+     */
+    public function findAll()
+    {
+        /* $dql = 'SELECT P, TIMESTAMPDIFF( YEAR,date_publication,now()) as years
+        , TIMESTAMPDIFF( MONTH, date_publication, now()) % 12 as months
+        , FLOOR( TIMESTAMPDIFF( DAY, date_publication, now() ) % 30.4375) as days FROM App\Entity\Post P ORDER BY P.date_publication DESC';
+        $query = $this->getEntityManager()->createQuery($dql);*/
+
+        /* $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb
+            ->select(
+                'P, TIMESTAMPDIFF( YEAR,date_publication,now()) as years
+                , TIMESTAMPDIFF( MONTH, date_publication, now()) % 12 as months
+                , FLOOR( TIMESTAMPDIFF( DAY, date_publication, now() ) % 30.4375) as days'
+            )
+            ->from('Post', 'P')
+            ->orderBy('P.date_publication', 'DESC');
+        $query = $qb->getQuery();
+
+        return $query->execute();*/
+
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+        SELECT P.id, P.categorie_id, P.utilisateur_id, P.titre, P.description, P.image, P.date_publication, TIMESTAMPDIFF( YEAR,date_publication,now()) as years
+        , TIMESTAMPDIFF( MONTH, date_publication, now()) % 12 as months
+        , FLOOR( TIMESTAMPDIFF( DAY, date_publication, now() ) % 30.4375) as days FROM Post P ORDER BY P.date_publication DESC
+            ';
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery();
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $resultSet->fetchAllAssociative();
+        // return $query->execute();
+        // return $this->findBy([], ['datePublication' => 'DESC']);
     }
 
     /**
